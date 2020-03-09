@@ -14,15 +14,17 @@
 # limitations under the License.
 #
 
-CYGNUS_VERSION_MAJOR := 2
-CYGNUS_VERSION_MINOR := 0
-CYGNUS_VERSION := $(CYGNUS_VERSION_MAJOR).$(CYGNUS_VERSION_MINOR)
+ADDITIONAL_BUILD_PROPERTIES += /
+   ro.cygnus.version=$(CYGNUS_VERSION) /
+   ro.system.cygnus.build=$(MAIN_VERSION) /
+   ro.system.cygnus.releasetype=$(CYGNUS_BUILD_TYPE) /
+   ro.system.cygnus.device=$(CYGNUS_BUILD) /
+   ro.caf.tag=$(CAF_REV)
 
-ifndef CYGNUS_BUILD_TYPE
-   CYGNUS_BUILD_TYPE := UNOFFICIAL
+ifeq ($(CYGNUS_BUILD_TYPE),OFFICIAL)
+   ADDITIONAL_BUILD_PROPERTIES += /
+       ro.cygnus.build.number=$(CYGNUS_BUILD_NUMBER)-OFF
+   else
+       ADDITIONAL_BUILD_PROPERTIES += /
+         ro.cygnus.build.number=$(CYGNUS_BUILD_NUMBER)-UNOFF
 endif
-
-CYGNUS_BUILD_NUMBER := CYGQ.0$(CYGNUS_VERSION_MAJOR)$(CYGNUS_VERSION_MINOR)0.$(shell date +%Y%m%d)
-PACKAGE_VERSION := Cygnus-$(CYGNUS_VERSION)-$(CYGNUS_BUILD_TYPE)-$(CYGNUS_BUILD)--$(CYGNUS_BUILD_NUMBER)
-MAIN_VERSION := Cygnus-$(CYGNUS_VERSION)-$(shell date +%m%d%H%M)
-CAF_REV := $(shell grep "<default revision=" manifest/default.xml | awk -F'"' '{print $$2}' | awk  -F "/" '{print $$3}')
